@@ -152,3 +152,13 @@ button:hover {
 #info-panel p {
     margin-bottom: 10px;
 }
+
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+
+    #info-panel {
+        grid-column: 1;
+    }
+}
