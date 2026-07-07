@@ -11,12 +11,21 @@ const MAX_HEIGHT = 450;
 // アニメーション速度(ms)
 let animationSpeed = 50;
 
+
+// 一時停止フラグ
+let isPaused = false;
+
+// ソート中フラグ
+let isSorting = false;
+
 // 配列
 let array = [];
 
 // =======================================
 // HTML要素取得
 // =======================================
+
+const pauseButton = document.getElementById("pause-btn");
 
 const visualizer = document.getElementById("visualizer");
 
@@ -95,6 +104,17 @@ function sleep(ms) {
 
 }
 
+
+async function waitIfPaused() {
+
+    while (isPaused) {
+
+        await sleep(50);
+
+    }
+
+}
+
 // =======================================
 // バブルソート
 // =======================================
@@ -105,6 +125,9 @@ async function bubbleSort() {
 
         for (let j = 0; j < array.length - i - 1; j++) {
 
+            // 一時停止中ならここで待機
+            await waitIfPaused();
+
             // 比較中を表示
             drawArray(j, j + 1, array.length - i);
 
@@ -112,6 +135,7 @@ async function bubbleSort() {
 
             if (array[j] > array[j + 1]) {
 
+                // 要素を交換
                 const temp = array[j];
                 array[j] = array[j + 1];
                 array[j + 1] = temp;
@@ -127,10 +151,14 @@ async function bubbleSort() {
 
     }
 
-    // 完成
+    // ソート完了
     drawArray(-1, -1, 0);
 
+    isPaused = false;
+    pauseButton.textContent = "一時停止";
+
 }
+
 
 // =======================================
 // 初期化
@@ -160,6 +188,30 @@ shuffleButton.addEventListener("click", () => {
 
 startButton.addEventListener("click", async () => {
 
+    if (isSorting) return;
+
+    isSorting = true;
+
     await bubbleSort();
+
+    isSorting = false;
+
+});
+
+pauseButton.addEventListener("click", () => {
+
+    if (!isSorting) return;
+
+    isPaused = !isPaused;
+
+    if (isPaused) {
+
+        pauseButton.textContent = "再開";
+
+    } else {
+
+        pauseButton.textContent = "一時停止";
+
+    }
 
 });
