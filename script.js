@@ -53,7 +53,13 @@ function generateArray() {
 // 描画
 // =======================================
 
-function drawArray(compareA = -1, compareB = -1, sortedStart = BAR_COUNT) {
+function drawArray(
+    compareA = -1,
+    compareB = -1,
+    sortedStart = BAR_COUNT,
+    swapA = -1,
+    swapB = -1
+) {
 
     visualizer.innerHTML = "";
 
@@ -65,25 +71,30 @@ function drawArray(compareA = -1, compareB = -1, sortedStart = BAR_COUNT) {
 
         bar.style.height = array[i] + "px";
 
-        // 色分け
+        // 交換した要素
+        if (i === swapA || i === swapB) {
 
-        if (i === compareA || i === compareB) {
+            bar.style.backgroundColor = "gold";
 
-            // 比較中
+        }
+
+        // 比較中
+        else if (i === compareA || i === compareB) {
+
             bar.style.backgroundColor = "red";
 
         }
 
+        // ソート済み
         else if (i >= sortedStart) {
 
-            // ソート済み
             bar.style.backgroundColor = "limegreen";
 
         }
 
+        // 通常
         else {
 
-            // 通常
             bar.style.backgroundColor = "#2c7be5";
 
         }
@@ -125,23 +136,33 @@ async function bubbleSort() {
 
         for (let j = 0; j < array.length - i - 1; j++) {
 
-            // 一時停止中ならここで待機
+            // 一時停止中なら待機
             await waitIfPaused();
 
-            // 比較中を表示
-            drawArray(j, j + 1, array.length - i);
+            // 比較中
+            drawArray(
+                j,
+                j + 1,
+                array.length - i
+            );
 
             await sleep(animationSpeed);
 
             if (array[j] > array[j + 1]) {
 
-                // 要素を交換
+                // 交換
                 const temp = array[j];
                 array[j] = array[j + 1];
                 array[j + 1] = temp;
 
-                // 交換後を表示
-                drawArray(j, j + 1, array.length - i);
+                // 交換したことを黄色で表示
+                drawArray(
+                    -1,
+                    -1,
+                    array.length - i,
+                    j,
+                    j + 1
+                );
 
                 await sleep(animationSpeed);
 
@@ -151,10 +172,11 @@ async function bubbleSort() {
 
     }
 
-    // ソート完了
+    // 完成
     drawArray(-1, -1, 0);
 
     isPaused = false;
+
     pauseButton.textContent = "一時停止";
 
 }
