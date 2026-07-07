@@ -280,9 +280,11 @@ async function compare(i, j) {
 
     state.compareCount++;
 
-    renderState.compare = [i, j];
+    // 前回の色を消す
+    clearHighlights();
 
-    renderState.swap = [-1, -1];
+    // 比較中
+    renderState.compare = [i, j];
 
     updateInfo();
 
@@ -304,11 +306,14 @@ async function swap(i, j) {
 
     state.swapCount++;
 
+    // 要素を交換
     [state.array[i], state.array[j]] =
         [state.array[j], state.array[i]];
 
+    // 比較色を消す
     renderState.compare = [-1, -1];
 
+    // 交換色
     renderState.swap = [i, j];
 
     updateInfo();
@@ -318,6 +323,11 @@ async function swap(i, j) {
     await waitIfPaused();
 
     await sleep(state.animationSpeed);
+
+    // 黄色を消す
+    clearHighlights();
+
+    drawArray();
 
 }
 

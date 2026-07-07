@@ -10,17 +10,15 @@ async function bubbleSort() {
 
         let swapped = false;
 
-        // この位置以降はソート済み
+        // ソート済み範囲
         renderState.sortedFrom = n - i;
 
         for (let j = 0; j < n - i - 1; j++) {
 
-            // 比較
             await compare(j, j + 1);
 
             if (state.array[j] > state.array[j + 1]) {
 
-                // 交換
                 await swap(j, j + 1);
 
                 swapped = true;
@@ -29,7 +27,6 @@ async function bubbleSort() {
 
         }
 
-        // 1周して交換が無ければ終了
         if (!swapped) {
 
             break;
@@ -38,7 +35,6 @@ async function bubbleSort() {
 
     }
 
-    // 全てソート済み
     renderState.sortedFrom = 0;
 
 }
