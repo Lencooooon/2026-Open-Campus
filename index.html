@@ -2,75 +2,192 @@
 <html lang="ja">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>ソートアルゴリズム可視化</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
     <header>
+
         <h1>ソートアルゴリズム可視化</h1>
+
     </header>
 
     <main>
 
-        <!-- ===== 操作パネル ===== -->
-        <section id="control-panel">
+        <!-- ==========================
+             コントロールパネル
+        =========================== -->
+
+        <section class="control-panel">
+
+            <!-- アルゴリズム選択 -->
 
             <div class="control-group">
-                <label for="algorithm">アルゴリズム</label>
 
-                <select id="algorithm">
+                <label for="algorithm-select">アルゴリズム</label>
+
+                <select id="algorithm-select">
+
                     <option value="bubble">バブルソート</option>
                     <option value="selection">選択ソート</option>
                     <option value="insertion">挿入ソート</option>
+                    <option value="shell">シェルソート</option>
                     <option value="quick">クイックソート</option>
                     <option value="merge">マージソート</option>
+                    <option value="heap">ヒープソート</option>
+
                 </select>
+
             </div>
+
+            <!-- 要素数 -->
 
             <div class="control-group">
-                <label for="size">要素数</label>
-                <input type="range" id="size" min="10" max="100" value="50">
+
+                <label for="bar-slider">
+
+                    要素数 :
+                    <span id="bar-count-label">50</span>
+
+                </label>
+
+                <input
+                    type="range"
+                    id="bar-slider"
+                    min="10"
+                    max="200"
+                    value="50">
+
             </div>
+
+            <!-- アニメーション速度 -->
 
             <div class="control-group">
-                <label for="speed">速度</label>
-                <input type="range" id="speed" min="1" max="100" value="50">
+
+                <label for="speed-slider">
+
+                    速度 :
+                    <span id="speed-label">50</span> ms
+
+                </label>
+
+                <input
+                    type="range"
+                    id="speed-slider"
+                    min="1"
+                    max="200"
+                    value="50">
+
             </div>
 
-            <div class="buttons">
-                <button id="shuffle-btn">シャッフル</button>
-                <button id="start-btn">開始</button>
-                <button id="pause-btn">一時停止</button>
+            <!-- ボタン -->
+
+            <div class="button-group">
+
+                <button id="shuffle-btn">
+
+                    シャッフル
+
+                </button>
+
+                <button id="start-btn">
+
+                    開始
+
+                </button>
+
+                <button id="pause-btn">
+
+                    一時停止
+
+                </button>
+
+                <button id="reset-btn">
+
+                    リセット
+
+                </button>
+
             </div>
 
         </section>
 
-        <!-- ===== ソート表示エリア ===== -->
-        <section id="visualizer">
+        <!-- ==========================
+             情報表示
+        =========================== -->
+
+        <section class="info-panel">
+
+            <div>
+
+                比較回数 :
+                <span id="compare-count">
+
+                    0
+
+                </span>
+
+            </div>
+
+            <div>
+
+                交換回数 :
+                <span id="swap-count">
+
+                    0
+
+                </span>
+
+            </div>
+
+            <div>
+
+                状態 :
+                <span id="status">
+
+                    待機中
+
+                </span>
+
+            </div>
 
         </section>
 
-        <!-- ===== 情報表示 ===== -->
-        <section id="info-panel">
+        <!-- ==========================
+             ソート表示
+        =========================== -->
 
-            <h2>実行情報</h2>
-
-            <p>比較回数：<span id="compare-count">0</span></p>
-
-            <p>交換回数：<span id="swap-count">0</span></p>
-
-            <p>時間計算量：<span id="time-complexity">-</span></p>
-
-            <p>現在の状態：<span id="status">待機中</span></p>
+        <section
+            id="visualizer">
 
         </section>
 
     </main>
+
+    <!-- ========================================= -->
+    <!-- JavaScript -->
+    <!-- ========================================= -->
+
+    <script src="algorithms/bubble.js"></script>
+
+    <!-- 今後追加予定 -->
+
+    <!--
+    <script src="algorithms/selection.js"></script>
+    <script src="algorithms/insertion.js"></script>
+    <script src="algorithms/shell.js"></script>
+    <script src="algorithms/quick.js"></script>
+    <script src="algorithms/merge.js"></script>
+    <script src="algorithms/heap.js"></script>
+    -->
 
     <script src="script.js"></script>
 

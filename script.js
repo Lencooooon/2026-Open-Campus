@@ -1,103 +1,240 @@
-// =======================================
-// 設定
-// =======================================
-
-// 棒の本数
-const BAR_COUNT = 50;
-
-// 棒の最大高さ
-const MAX_HEIGHT = 450;
-
-// アニメーション速度(ms)
-let animationSpeed = 50;
+// ============================================================
+//  Sort Visualizer
+//  script.js
+// ============================================================
 
 
-// 一時停止フラグ
-let isPaused = false;
 
-// ソート中フラグ
-let isSorting = false;
+// ============================================================
+//  Config
+//  アプリ全体の設定
+// ============================================================
 
-// 配列
-let array = [];
+const Config = {
 
-// =======================================
-// HTML要素取得
-// =======================================
+    // 初期要素数
+    DEFAULT_BAR_COUNT: 50,
 
-const pauseButton = document.getElementById("pause-btn");
+    // 最小要素数
+    MIN_BAR_COUNT: 10,
 
-const visualizer = document.getElementById("visualizer");
+    // 最大要素数
+    MAX_BAR_COUNT: 200,
 
-const shuffleButton = document.getElementById("shuffle-btn");
+    // 棒の最大高さ
+    MAX_HEIGHT: 450,
 
-const startButton = document.getElementById("start-btn");
+    // 初期アニメーション速度(ms)
+    DEFAULT_SPEED: 50
 
-// =======================================
-// ランダム配列生成
-// =======================================
+};
+
+
+
+// ============================================================
+//  State
+//  アプリの状態管理
+// ============================================================
+
+const state = {
+
+    // 配列
+    array: [],
+
+    // 要素数
+    barCount: Config.DEFAULT_BAR_COUNT,
+
+    // アニメーション速度
+    animationSpeed: Config.DEFAULT_SPEED,
+
+    // 現在選択されているアルゴリズム
+    algorithm: "bubble",
+
+    // ソート状態
+    isSorting: false,
+
+    // 一時停止状態
+    isPaused: false,
+
+    // 比較回数
+    compareCount: 0,
+
+    // 交換回数
+    swapCount: 0
+
+};
+
+
+
+// ============================================================
+//  描画状態
+//  drawArray()専用
+// ============================================================
+
+const renderState = {
+
+    // 比較中
+    compare: [-1, -1],
+
+    // 交換中
+    swap: [-1, -1],
+
+    // この位置以降はソート済み
+    sortedFrom: Config.DEFAULT_BAR_COUNT,
+
+    // 将来追加予定
+    pivot: -1,
+    current: -1
+
+};
+
+
+
+// ============================================================
+//  DOM取得
+// ============================================================
+
+// 描画エリア
+const visualizer =
+    document.getElementById("visualizer");
+
+// ボタン
+const shuffleButton =
+    document.getElementById("shuffle-btn");
+
+const startButton =
+    document.getElementById("start-btn");
+
+const pauseButton =
+    document.getElementById("pause-btn");
+
+const resetButton =
+    document.getElementById("reset-btn");
+
+// アルゴリズム選択
+const algorithmSelect =
+    document.getElementById("algorithm-select");
+
+// スライダー
+const barSlider =
+    document.getElementById("bar-slider");
+
+const speedSlider =
+    document.getElementById("speed-slider");
+
+// ラベル
+const barCountLabel =
+    document.getElementById("bar-count-label");
+
+const speedLabel =
+    document.getElementById("speed-label");
+
+// 情報表示
+const compareCountLabel =
+    document.getElementById("compare-count");
+
+const swapCountLabel =
+    document.getElementById("swap-count");
+
+const statusLabel =
+    document.getElementById("status");
+
+// ============================================================
+//  配列生成
+// ============================================================
 
 function generateArray() {
 
-    array = [];
+    state.array = [];
 
-    for (let i = 0; i < BAR_COUNT; i++) {
+    for (let i = 0; i < state.barCount; i++) {
 
-        array.push(Math.floor(Math.random() * MAX_HEIGHT) + 20);
+        state.array.push(
+            Math.floor(Math.random() * Config.MAX_HEIGHT) + 20
+        );
 
     }
 
+    state.compareCount = 0;
+    state.swapCount = 0;
+
+    renderState.compare = [-1, -1];
+    renderState.swap = [-1, -1];
+    renderState.sortedFrom = state.barCount;
+
 }
 
-// =======================================
-// 描画
-// =======================================
 
-function drawArray(
-    compareA = -1,
-    compareB = -1,
-    sortedStart = BAR_COUNT,
-    swapA = -1,
-    swapB = -1
-) {
+
+// ============================================================
+//  情報表示更新
+// ============================================================
+
+function updateInfo() {
+
+    compareCountLabel.textContent = state.compareCount;
+
+    swapCountLabel.textContent = state.swapCount;
+
+}
+
+
+
+// ============================================================
+//  ステータス更新
+// ============================================================
+
+function setStatus(text) {
+
+    statusLabel.textContent = text;
+
+}
+
+
+
+// ============================================================
+//  描画
+// ============================================================
+
+function drawArray() {
 
     visualizer.innerHTML = "";
 
-    for (let i = 0; i < array.length; i++) {
+    for (let i = 0; i < state.array.length; i++) {
 
         const bar = document.createElement("div");
 
         bar.classList.add("bar");
 
-        bar.style.height = array[i] + "px";
+        bar.style.height = state.array[i] + "px";
 
-        // 交換した要素
-        if (i === swapA || i === swapB) {
 
-            bar.style.backgroundColor = "gold";
 
-        }
+        // -------------------------------
+        // 色分け
+        // -------------------------------
 
-        // 比較中
-        else if (i === compareA || i === compareB) {
+        if (i === renderState.swap[0] ||
+            i === renderState.swap[1]) {
 
-            bar.style.backgroundColor = "red";
-
-        }
-
-        // ソート済み
-        else if (i >= sortedStart) {
-
-            bar.style.backgroundColor = "limegreen";
+            bar.classList.add("swap");
 
         }
 
-        // 通常
-        else {
+        else if (i === renderState.compare[0] ||
+                 i === renderState.compare[1]) {
 
-            bar.style.backgroundColor = "#2c7be5";
+            bar.classList.add("compare");
 
         }
+
+        else if (i >= renderState.sortedFrom) {
+
+            bar.classList.add("sorted");
+
+        }
+
+
 
         visualizer.appendChild(bar);
 
@@ -105,9 +242,11 @@ function drawArray(
 
 }
 
-// =======================================
-// 待機
-// =======================================
+
+
+// ============================================================
+//  待機
+// ============================================================
 
 function sleep(ms) {
 
@@ -116,124 +255,306 @@ function sleep(ms) {
 }
 
 
+
+// ============================================================
+//  一時停止待機
+// ============================================================
+
 async function waitIfPaused() {
 
-    while (isPaused) {
+    while (state.isPaused) {
 
-        await sleep(50);
+        await sleep(30);
 
     }
 
 }
 
-// =======================================
-// バブルソート
-// =======================================
 
-async function bubbleSort() {
 
-    for (let i = 0; i < array.length - 1; i++) {
+// ============================================================
+//  比較演出
+// ============================================================
 
-        for (let j = 0; j < array.length - i - 1; j++) {
+async function compare(i, j) {
 
-            // 一時停止中なら待機
-            await waitIfPaused();
+    state.compareCount++;
 
-            // 比較中
-            drawArray(
-                j,
-                j + 1,
-                array.length - i
-            );
+    renderState.compare = [i, j];
 
-            await sleep(animationSpeed);
+    renderState.swap = [-1, -1];
 
-            if (array[j] > array[j + 1]) {
+    updateInfo();
 
-                // 交換
-                const temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
+    drawArray();
 
-                // 交換したことを黄色で表示
-                drawArray(
-                    -1,
-                    -1,
-                    array.length - i,
-                    j,
-                    j + 1
-                );
+    await waitIfPaused();
 
-                await sleep(animationSpeed);
+    await sleep(state.animationSpeed);
 
-            }
+}
 
-        }
 
-    }
 
-    // 完成
-    drawArray(-1, -1, 0);
+// ============================================================
+//  交換演出
+// ============================================================
 
-    isPaused = false;
+async function swap(i, j) {
+
+    state.swapCount++;
+
+    [state.array[i], state.array[j]] =
+        [state.array[j], state.array[i]];
+
+    renderState.compare = [-1, -1];
+
+    renderState.swap = [i, j];
+
+    updateInfo();
+
+    drawArray();
+
+    await waitIfPaused();
+
+    await sleep(state.animationSpeed);
+
+}
+
+
+
+// ============================================================
+//  色リセット
+// ============================================================
+
+function clearHighlights() {
+
+    renderState.compare = [-1, -1];
+
+    renderState.swap = [-1, -1];
+
+}
+
+
+
+// ============================================================
+//  ソート終了
+// ============================================================
+
+function finishAnimation() {
+
+    clearHighlights();
+
+    renderState.sortedFrom = 0;
+
+    drawArray();
+
+    setStatus("ソート完了");
+
+    state.isSorting = false;
+
+    state.isPaused = false;
 
     pauseButton.textContent = "一時停止";
 
 }
 
+// ============================================================
+//  ソート開始
+// ============================================================
 
-// =======================================
-// 初期化
-// =======================================
+async function startSorting() {
+
+    if (state.isSorting) {
+        return;
+    }
+
+    state.isSorting = true;
+
+    state.compareCount = 0;
+    state.swapCount = 0;
+
+    updateInfo();
+
+    setStatus("ソート中");
+
+    switch (state.algorithm) {
+
+        case "bubble":
+
+            await bubbleSort();
+            break;
+
+        default:
+
+            alert("このアルゴリズムは未実装です。");
+            state.isSorting = false;
+            return;
+
+    }
+
+    finishAnimation();
+
+}
+
+
+
+// ============================================================
+//  初期化
+// ============================================================
 
 function initialize() {
 
+    barSlider.value = state.barCount;
+    speedSlider.value = state.animationSpeed;
+
+    barCountLabel.textContent = state.barCount;
+    speedLabel.textContent = state.animationSpeed;
+
     generateArray();
+
+    updateInfo();
+
+    setStatus("待機中");
 
     drawArray();
 
 }
 
-initialize();
 
-// =======================================
-// ボタン
-// =======================================
+
+// ============================================================
+//  シャッフル
+// ============================================================
 
 shuffleButton.addEventListener("click", () => {
 
+    if (state.isSorting) return;
+
     generateArray();
+
+    updateInfo();
 
     drawArray();
 
 });
 
+
+
+// ============================================================
+//  開始
+// ============================================================
+
 startButton.addEventListener("click", async () => {
 
-    if (isSorting) return;
-
-    isSorting = true;
-
-    await bubbleSort();
-
-    isSorting = false;
+    await startSorting();
 
 });
 
+
+
+// ============================================================
+//  一時停止
+// ============================================================
+
 pauseButton.addEventListener("click", () => {
 
-    if (!isSorting) return;
+    if (!state.isSorting) return;
 
-    isPaused = !isPaused;
+    state.isPaused = !state.isPaused;
 
-    if (isPaused) {
+    if (state.isPaused) {
 
         pauseButton.textContent = "再開";
 
-    } else {
+        setStatus("一時停止");
+
+    }
+
+    else {
 
         pauseButton.textContent = "一時停止";
+
+        setStatus("ソート中");
 
     }
 
 });
+
+
+
+// ============================================================
+//  リセット
+// ============================================================
+
+resetButton.addEventListener("click", () => {
+
+    if (state.isSorting) return;
+
+    generateArray();
+
+    updateInfo();
+
+    setStatus("待機中");
+
+    drawArray();
+
+});
+
+
+
+// ============================================================
+//  要素数変更
+// ============================================================
+
+barSlider.addEventListener("input", () => {
+
+    if (state.isSorting) return;
+
+    state.barCount = Number(barSlider.value);
+
+    barCountLabel.textContent = state.barCount;
+
+    generateArray();
+
+    drawArray();
+
+    updateInfo();
+
+});
+
+
+
+// ============================================================
+//  速度変更
+// ============================================================
+
+speedSlider.addEventListener("input", () => {
+
+    state.animationSpeed = Number(speedSlider.value);
+
+    speedLabel.textContent = state.animationSpeed;
+
+});
+
+
+
+// ============================================================
+//  アルゴリズム変更
+// ============================================================
+
+algorithmSelect.addEventListener("change", () => {
+
+    if (state.isSorting) return;
+
+    state.algorithm = algorithmSelect.value;
+
+});
+
+
+
+// ============================================================
+//  起動
+// ============================================================
+
+initialize();
