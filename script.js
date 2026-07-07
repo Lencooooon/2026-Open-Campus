@@ -14,6 +14,8 @@ let array = [];
 // visualizer取得
 const visualizer = document.getElementById("visualizer");
 
+// シャッフルボタン
+const shuffleButton = document.getElementById("shuffle-btn");
 
 // ===============================
 // ランダム配列生成
@@ -65,3 +67,12 @@ function drawArray() {
 generateArray();
 
 drawArray();
+
+
+shuffleButton.addEventListener("click", () => {
+
+    generateArray();
+
+    drawArray();
+
+});
