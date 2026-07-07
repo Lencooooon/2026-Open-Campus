@@ -2,6 +2,9 @@
 // 設定
 // ===============================
 
+// ソートスタート
+const startButton = document.getElementById("start-btn");
+
 // 棒の本数
 const BAR_COUNT = 50;
 
@@ -61,6 +64,45 @@ function drawArray() {
 
 
 // ===============================
+// 待つ関数
+// ===============================
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+// ===============================
+// バブルソートを定義
+// ===============================
+
+async function bubbleSort() {
+
+    for (let i = 0; i < array.length - 1; i++) {
+
+        for (let j = 0; j < array.length - i - 1; j++) {
+
+            if (array[j] > array[j + 1]) {
+
+                // 入れ替え
+                const temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+
+                drawArray();
+
+                await sleep(50);
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// ===============================
 // 初期化
 // ===============================
 
@@ -74,5 +116,13 @@ shuffleButton.addEventListener("click", () => {
     generateArray();
 
     drawArray();
+
+});
+
+
+
+startButton.addEventListener("click", async () => {
+
+    await bubbleSort();
 
 });
