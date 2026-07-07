@@ -1,28 +1,32 @@
-// ===============================
+// =======================================
 // 設定
-// ===============================
-
-// ソートスタート
-const startButton = document.getElementById("start-btn");
+// =======================================
 
 // 棒の本数
 const BAR_COUNT = 50;
 
-// 棒の高さの最大値
+// 棒の最大高さ
 const MAX_HEIGHT = 450;
+
+// アニメーション速度(ms)
+let animationSpeed = 50;
 
 // 配列
 let array = [];
 
-// visualizer取得
+// =======================================
+// HTML要素取得
+// =======================================
+
 const visualizer = document.getElementById("visualizer");
 
-// シャッフルボタン
 const shuffleButton = document.getElementById("shuffle-btn");
 
-// ===============================
+const startButton = document.getElementById("start-btn");
+
+// =======================================
 // ランダム配列生成
-// ===============================
+// =======================================
 
 function generateArray() {
 
@@ -30,31 +34,50 @@ function generateArray() {
 
     for (let i = 0; i < BAR_COUNT; i++) {
 
-        const value = Math.floor(Math.random() * MAX_HEIGHT) + 20;
-
-        array.push(value);
+        array.push(Math.floor(Math.random() * MAX_HEIGHT) + 20);
 
     }
 
 }
 
+// =======================================
+// 描画
+// =======================================
 
-// ===============================
-// 棒を描画
-// ===============================
+function drawArray(compareA = -1, compareB = -1, sortedStart = BAR_COUNT) {
 
-function drawArray() {
-
-    // 一度全部消す
     visualizer.innerHTML = "";
 
-    for (const value of array) {
+    for (let i = 0; i < array.length; i++) {
 
         const bar = document.createElement("div");
 
         bar.classList.add("bar");
 
-        bar.style.height = value + "px";
+        bar.style.height = array[i] + "px";
+
+        // 色分け
+
+        if (i === compareA || i === compareB) {
+
+            // 比較中
+            bar.style.backgroundColor = "red";
+
+        }
+
+        else if (i >= sortedStart) {
+
+            // ソート済み
+            bar.style.backgroundColor = "limegreen";
+
+        }
+
+        else {
+
+            // 通常
+            bar.style.backgroundColor = "#2c7be5";
+
+        }
 
         visualizer.appendChild(bar);
 
@@ -62,19 +85,19 @@ function drawArray() {
 
 }
 
-
-// ===============================
-// 待つ関数
-// ===============================
+// =======================================
+// 待機
+// =======================================
 
 function sleep(ms) {
+
     return new Promise(resolve => setTimeout(resolve, ms));
+
 }
 
-
-// ===============================
-// バブルソートを定義
-// ===============================
+// =======================================
+// バブルソート
+// =======================================
 
 async function bubbleSort() {
 
@@ -82,16 +105,21 @@ async function bubbleSort() {
 
         for (let j = 0; j < array.length - i - 1; j++) {
 
+            // 比較中を表示
+            drawArray(j, j + 1, array.length - i);
+
+            await sleep(animationSpeed);
+
             if (array[j] > array[j + 1]) {
 
-                // 入れ替え
                 const temp = array[j];
                 array[j] = array[j + 1];
                 array[j + 1] = temp;
 
-                drawArray();
+                // 交換後を表示
+                drawArray(j, j + 1, array.length - i);
 
-                await sleep(50);
+                await sleep(animationSpeed);
 
             }
 
@@ -99,17 +127,28 @@ async function bubbleSort() {
 
     }
 
+    // 完成
+    drawArray(-1, -1, 0);
+
 }
 
-
-// ===============================
+// =======================================
 // 初期化
-// ===============================
+// =======================================
 
-generateArray();
+function initialize() {
 
-drawArray();
+    generateArray();
 
+    drawArray();
+
+}
+
+initialize();
+
+// =======================================
+// ボタン
+// =======================================
 
 shuffleButton.addEventListener("click", () => {
 
@@ -118,8 +157,6 @@ shuffleButton.addEventListener("click", () => {
     drawArray();
 
 });
-
-
 
 startButton.addEventListener("click", async () => {
 
