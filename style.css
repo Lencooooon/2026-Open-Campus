@@ -298,17 +298,26 @@ main{
    アニメーション用カラー
 ========================================== */
 
-.bar.compare {
 
-    background: #ff4d4f;
-
-}
 
 .bar.swap {
 
     background: #ffd43b;
 
 }
+
+
+.bar.compare {
+
+    background: #ff4d4f;
+
+}
+
+
+.bar.active {
+    background: #a855f7;
+}
+
 
 .bar.sorted {
 

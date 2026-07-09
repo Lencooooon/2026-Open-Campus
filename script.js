@@ -79,11 +79,15 @@ const renderState = {
     // 交換中
     swap: [-1, -1],
 
-    // この位置以降はソート済み
+    // この位置以降はソート済み（Bubble用）
     sortedFrom: Config.DEFAULT_BAR_COUNT,
+
+    // 現在注目している要素
+    active: -1,
 
     // 将来追加予定
     pivot: -1,
+
     current: -1
 
 };
@@ -215,27 +219,30 @@ function drawArray() {
         // -------------------------------
 
         if (i === renderState.swap[0] ||
-            i === renderState.swap[1]) {
+    i === renderState.swap[1]) {
 
-            bar.classList.add("swap");
+    bar.classList.add("swap");
 
-        }
+    }
 
         else if (i === renderState.compare[0] ||
-                 i === renderState.compare[1]) {
+         i === renderState.compare[1]) {
 
-            bar.classList.add("compare");
+        bar.classList.add("compare");
 
-        }
+    }
+
+        else if (i === renderState.active) {
+
+        bar.classList.add("active");
+
+    }
 
         else if (i >= renderState.sortedFrom) {
 
-            bar.classList.add("sorted");
+        bar.classList.add("sorted");
 
-        }
-
-
-
+    }
         visualizer.appendChild(bar);
 
     }
@@ -398,6 +405,12 @@ async function startSorting() {
     case "selection":
 
         await selectionSort();
+        break;
+
+
+    case "insertion":
+
+        await insertionSort();
         break;
 
     default:
