@@ -388,18 +388,23 @@ async function startSorting() {
 
     setStatus("ソート中");
 
-    switch (state.algorithm) {
+   switch (state.algorithm) {
 
-        case "bubble":
+    case "bubble":
 
-            await bubbleSort();
-            break;
+        await bubbleSort();
+        break;
 
-        default:
+    case "selection":
 
-            alert("このアルゴリズムは未実装です。");
-            state.isSorting = false;
-            return;
+        await selectionSort();
+        break;
+
+    default:
+
+        alert("このアルゴリズムは未実装です。");
+        state.isSorting = false;
+        return;
 
     }
 
