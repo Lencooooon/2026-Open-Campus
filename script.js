@@ -413,6 +413,14 @@ async function startSorting() {
         await insertionSort();
         break;
 
+
+    case "quick":
+
+        await quickSort();
+
+        break;
+
+
     default:
 
         alert("このアルゴリズムは未実装です。");
