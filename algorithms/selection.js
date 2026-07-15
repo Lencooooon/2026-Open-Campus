@@ -44,6 +44,8 @@ async function selectionSort() {
 
     }
 
+    renderState.active = -1;
+
     renderState.sortedFrom = 0;
 
 }
