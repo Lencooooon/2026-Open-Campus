@@ -10,6 +10,10 @@ async function selectionSort() {
 
         let minIndex = i;
 
+            renderState.active = minIndex;
+
+            drawArray();
+
         for (let j = i + 1; j < n; j++) {
 
             await compare(minIndex, j);
@@ -18,6 +22,9 @@ async function selectionSort() {
 
                 minIndex = j;
 
+                renderState.active = minIndex;
+
+                drawArray();
             }
 
         }
@@ -25,6 +32,8 @@ async function selectionSort() {
         if (minIndex !== i) {
 
             await swap(i, minIndex);
+
+            renderState.active = -1;
 
         }
 
