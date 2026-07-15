@@ -25,6 +25,10 @@ async function selectionSort() {
                 renderState.active = minIndex;
 
                 drawArray();
+
+                await waitIfPaused();
+
+                await sleep(state.animationSpeed);
             }
 
         }
@@ -33,9 +37,9 @@ async function selectionSort() {
 
             await swap(i, minIndex);
 
-            renderState.active = -1;
-
         }
+
+        renderState.active = -1;
 
         // i番目までソート済み
         renderState.sortedFrom = i + 1;
