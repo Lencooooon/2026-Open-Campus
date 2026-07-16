@@ -214,41 +214,44 @@ function drawArray() {
 
 
 
-        // -------------------------------
+        // ------------------------------
         // 色分け
-        // -------------------------------
+        // ------------------------------
 
         if (i === renderState.swap[0] ||
-    i === renderState.swap[1]) {
+            i === renderState.swap[1]) {
 
-    bar.classList.add("swap");
+            bar.classList.add("swap");
 
-    }
+        }
 
         else if (i === renderState.compare[0] ||
-         i === renderState.compare[1]) {
+                i === renderState.compare[1]) {
 
-        bar.classList.add("compare");
+            bar.classList.add("compare");
 
-    }
+        }
 
         else if (i === renderState.active) {
 
-        bar.classList.add("active");
+            bar.classList.add("active");
 
-    }
+        }
+
+        else if (i === renderState.pivot) {
+
+            bar.classList.add("pivot");
+
+        }
 
         else if (i >= renderState.sortedFrom) {
 
         bar.classList.add("sorted");
 
+        }
+       
     }
-        visualizer.appendChild(bar);
-
-    }
-
 }
-
 
 
 // ============================================================

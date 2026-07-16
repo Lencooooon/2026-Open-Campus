@@ -37,19 +37,27 @@ async function partition(left, right) {
 
         if (state.array[j] < pivot) {
 
-            await swap(i, j);
+        if (i !== j) {
 
-            i++;
+        await swap(i, j);
 
         }
 
+        i++;
     }
 
-    await swap(i, right);
+}
+    if (i !== right ) {
+
+        await swap(i, right) 
+    }
 
     renderState.pivot = -1;
 
     drawArray();
+
+    await waitIfPaused();
+    await sleep(state.animationSpeed);
 
     return i;
 
