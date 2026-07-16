@@ -249,6 +249,7 @@ function drawArray() {
         bar.classList.add("sorted");
 
         }
+        
         visualizer.appendChild(bar);
        
     }
