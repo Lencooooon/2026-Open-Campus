@@ -88,7 +88,9 @@ const renderState = {
     // 将来追加予定
     pivot: -1,
 
-    current: -1
+    current: -1,
+
+    sortedQuick: [],
 
 };
 
@@ -165,6 +167,7 @@ function generateArray() {
     renderState.compare = [-1, -1];
     renderState.swap = [-1, -1];
     renderState.sortedFrom = state.barCount;
+    renderState.sortedQuick = [];
 
 }
 
@@ -219,38 +222,41 @@ function drawArray() {
         // ------------------------------
 
         if (i === renderState.swap[0] ||
-            i === renderState.swap[1]) {
+    i === renderState.swap[1]) {
 
-            bar.classList.add("swap");
+    bar.classList.add("swap");
 
-        }
+    }
 
-        else if (i === renderState.compare[0] ||
-                i === renderState.compare[1]) {
+    else if (i === renderState.compare[0] ||
+         i === renderState.compare[1]) {
 
-            bar.classList.add("compare");
+        bar.classList.add("compare");
 
-        }
+    }
 
-        else if (i === renderState.active) {
+    else if (i === renderState.active) {
 
-            bar.classList.add("active");
+        bar.classList.add("active");
 
-        }
+    }
 
-        else if (i === renderState.pivot) {
+    else if (i === renderState.pivot) {
 
-            bar.classList.add("pivot");
+        bar.classList.add("pivot");
 
-        }
+    }
 
-        else if (i >= renderState.sortedFrom) {
+    else if (
+     i >= renderState.sortedFrom ||
+        renderState.sortedQuick.includes(i)
+    ) {
 
         bar.classList.add("sorted");
 
-        }
-        
-        visualizer.appendChild(bar);
+    }
+
+    visualizer.appendChild(bar);
        
     }
 }
@@ -368,6 +374,8 @@ function finishAnimation() {
     clearHighlights();
 
     renderState.sortedFrom = 0;
+
+    renderState.sortedQuick = [];
 
     drawArray();
 
@@ -530,6 +538,8 @@ pauseButton.addEventListener("click", () => {
 
 resetButton.addEventListener("click", () => {
 
+    console.log(state.isSorting);
+
     if (state.isSorting) return;
 
     generateArray();
@@ -539,6 +549,8 @@ resetButton.addEventListener("click", () => {
     setStatus("待機中");
 
     drawArray();
+
+
 
 });
 

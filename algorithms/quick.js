@@ -47,11 +47,16 @@ async function partition(left, right) {
     }
 
 }
-    if (i !== right ) {
+    if (i !== right) {
 
-        await swap(i, right) 
+    await swap(i, right);
+
     }
 
+    // Pivotの位置を確定（緑）
+    renderState.sortedQuick.push(i);
+
+    // Pivot表示を消す
     renderState.pivot = -1;
 
     drawArray();
