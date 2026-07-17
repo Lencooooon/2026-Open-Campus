@@ -606,6 +606,16 @@ algorithmSelect.addEventListener("change", () => {
 
 
 
+
+const aboutButton = document.getElementById("aboutButton");
+
+aboutButton.addEventListener("click", () => {
+
+    window.location.href = "about.html";
+
+});
+
+
 // ============================================================
 //  起動
 // ============================================================
